@@ -1,4 +1,5 @@
 package client;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -188,7 +189,6 @@ public class DrawInterface extends JFrame implements ActionListener
         try 
         {
             doc.insertBeforeEnd(doc.getDefaultRootElement(),  ("<div style='text-align: left;'>" + textContent + "</div>")); 
-
         } 
         catch (IOException | javax.swing.text.BadLocationException e) 
         {
@@ -246,13 +246,15 @@ public class DrawInterface extends JFrame implements ActionListener
             g2d = image.createGraphics();
             drawPanel.paint(g2d);
 
-            htmlContent = "<img src='data:image/png; base64," + bufferedImageToBase64(image) + "'/>";
+            String iString = bufferedImageToBase64(image);
+
+            htmlContent = "<img src='data:image/png;base64," + iString + "'/>";
 
             cInt.message = htmlContent;
 
             System.out.println(htmlContent);
 
-            appendToEditorPane(cInt.msgPanel, ("<FONT COLOR = 'BLUE'>" +cInt.uName + ">" + htmlContent + "</FONT>"));
+            appendToEditorPane(cInt.msgPanel, ("<FONT COLOR = 'BLUE'>" + cInt.uName + ">" + htmlContent + "</FONT>"));
 
             this.dispose();
         }

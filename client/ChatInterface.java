@@ -36,12 +36,12 @@ public class ChatInterface extends JFrame implements ActionListener
     JPanel inputPanel = new JPanel();
     JPanel topPanel = new JPanel(new BorderLayout());
 
-    static JEditorPane msgPanel;
+    JEditorPane msgPanel;
     JScrollPane scrollPane;
 
-    static String message = "";
+    String message = "";
     static String response;
-    static String uName;
+    String uName;
 
     BufferedImage image;
 
@@ -65,6 +65,7 @@ public class ChatInterface extends JFrame implements ActionListener
         msgPanel = new JEditorPane();
 
         msgPanel.setContentType("text/html");
+        msgPanel.setEditorKit(new BASE64HTMLEditorKit());
         msgPanel.setEditable(false);
 
         scrollPane = new JScrollPane(msgPanel);
