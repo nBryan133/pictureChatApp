@@ -252,8 +252,6 @@ public class DrawInterface extends JFrame implements ActionListener
 
             cInt.message = htmlContent;
 
-            System.out.println(htmlContent);
-
             appendToEditorPane(cInt.msgPanel, ("<FONT COLOR = 'BLUE'>" + cInt.uName + ">" + htmlContent + "</FONT>"));
 
             this.dispose();
