@@ -27,7 +27,7 @@ public class DrawingPanel extends JPanel
         bSize = 3;
         color = Color.BLACK;
 
-        setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(200, 150));
         setBackground(Color.WHITE);
 
         addMouseListener(new MouseAdapter() 

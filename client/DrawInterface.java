@@ -140,7 +140,7 @@ public class DrawInterface extends JFrame implements ActionListener
             case "lightgray":
                 color = Color.LIGHT_GRAY;
                 break;
-            case "magneta":
+            case "magenta":
                 color = Color.MAGENTA;
                 break;
             case "orange":
