@@ -46,7 +46,6 @@ public class ChatInterface extends JFrame implements ActionListener
     BufferedImage image;
 
     private static InetAddress host;
-    private static int PORT;
 
     public static boolean running;
 
@@ -60,7 +59,6 @@ public class ChatInterface extends JFrame implements ActionListener
         
         this.getRootPane().setDefaultButton(sendButton);
         this.uName = userName;
-        this.PORT = PORT;
 
         name = new JLabel(uName);
 
