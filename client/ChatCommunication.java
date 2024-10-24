@@ -7,16 +7,16 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 public class ChatCommunication implements Runnable
 {
 
-    private static InetAddress host;
-    private static int PORT;
+    private InetAddress host;
+    private final int PORT;
 
-    static ChatInterface cInt;
-
-    public static String msg;
+    ChatInterface cInt;
 
     ChatCommunication(ChatInterface cInt, int PORT)
     {
@@ -24,12 +24,10 @@ public class ChatCommunication implements Runnable
         this.cInt = cInt;
     }
 
-    private static void chatFunction()
+    private void chatFunction()
     {
 
-        Socket link = null;
-
-        msg = "";
+        Socket link;
 
         try 
         {
@@ -37,60 +35,63 @@ public class ChatCommunication implements Runnable
             host = InetAddress.getLocalHost();
 
             link = new Socket(host, PORT);
-            
-            BufferedReader input = new BufferedReader(new InputStreamReader(link.getInputStream()));
-            
-            PrintWriter output = new PrintWriter(link.getOutputStream(),true); 
 
-            output.println(cInt.uName + " has joined the chat.");
+            String serverMsg;
 
-            while (link.isConnected() && cInt.running)
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(link.getInputStream(), StandardCharsets.UTF_8))) 
             {
-
-                if(input.ready())
+                PrintWriter output = new PrintWriter(link.getOutputStream(), true, StandardCharsets.UTF_8);
+                
+                output.println(cInt.uName + " has joined the chat.");
+                
+                while (link.isConnected() && cInt.getRunning())
                 {
-
-                    String serverMsg = input.readLine();
-                    if(!serverMsg.toLowerCase().equals("/online"))
+                    
+                    if(input.ready())
                     {
-                        ChatInterface.appendToEditorPane(cInt.msgPanel, serverMsg);
+                        serverMsg = input.readLine();
+                        
+                        if(serverMsg != null)
+                        {
+                            if(!serverMsg.toLowerCase(Locale.ENGLISH).equals("/online"))
+                            {
+                                ChatInterface.appendToEditorPane(cInt.msgPanel, serverMsg);
+                            }
+                            else
+                            {
+                                output.println(cInt.uName);
+                            }
+                        }
+                        
                     }
-                    else
+
+                    if(!cInt.message.isBlank())
                     {
-                        output.println(cInt.uName);
+                        if(!cInt.message.toLowerCase(Locale.ENGLISH).equals("/online"))
+                        {
+                            output.println((cInt.uName + ">" + cInt.message));
+                        }
+                        else
+                        {
+                            ChatInterface.appendToEditorPane(cInt.msgPanel, "Online:");
+                            ChatInterface.appendToEditorPane(cInt.msgPanel, cInt.uName);
+                            output.println(cInt.message);
+                        }
+                        
+                        cInt.message = "";
                     }
                     
-                }
-
-                if(!cInt.message.isBlank())
-                {
-                    if(!cInt.message.toLowerCase().equals("/online"))
+                    if(!cInt.getRunning())
                     {
-                        output.println((cInt.uName + ">" + cInt.message));
-                    }
-                    else
-                    {
-                        ChatInterface.appendToEditorPane(cInt.msgPanel, "Online:");
-                        ChatInterface.appendToEditorPane(cInt.msgPanel, cInt.uName);
-                        output.println(cInt.message);
+                        output.println(cInt.uName + " has left the chat.");
+                        link.close();
                     }
 
-                    cInt.message = "";
                 }
-
-                if(cInt.running == false)
-                {
-                    output.println(cInt.uName + " has left the chat.");
-                    link.close();
-                }
-                
             }
-
-            input.close();
         }
         catch(IOException ioEx)
         {
-            ioEx.printStackTrace();
         } 
     }
 
@@ -107,7 +108,16 @@ public class ChatCommunication implements Runnable
         catch(UnknownHostException uhEx)
         {
             System.out.println("Host ID not found!");
-            System.exit(1);
+
+            try 
+            {
+                System.exit(1);
+            } 
+            catch (RuntimeException e) 
+            {
+                System.out.println(e);
+            }
+            
         }
         
         chatFunction();

@@ -4,9 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -25,11 +24,11 @@ public class ChatInterface extends JFrame implements ActionListener
 
     Thread cThread;
 
-    static JButton sendButton = new JButton("Send");
+    JButton sendButton = new JButton("Send");
     JButton drawButton = new JButton("Draw");
     JButton logoutButton = new JButton("Logout");
 
-    static JTextField textbox = new JTextField(20);
+    JTextField textbox = new JTextField(20);
 
     JLabel name;
 
@@ -40,25 +39,40 @@ public class ChatInterface extends JFrame implements ActionListener
     JScrollPane scrollPane;
 
     String message = "";
-    static String response;
+    //String response;
     String uName;
 
-    BufferedImage image;
+    //BufferedImage image;
 
-    private static InetAddress host;
+    //private InetAddress host;
 
-    public static boolean running;
+    private boolean running;
 
     ChatInterface(String userName, int PORT)
     {        
         running = true;
+        
+        this.uName = userName;
+
+        setUpMainFrame(PORT);
+
+        appendToEditorPane(msgPanel, uName + " has entered the chat.");
+
+        message = "/online";
+
+    }
+
+
+    private void setUpMainFrame(int PORT)
+    {
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension d = (tk.getScreenSize());
 
         cThread = new Thread(new ChatCommunication(this, PORT));
 
         cThread.start();
-        
+
         this.getRootPane().setDefaultButton(sendButton);
-        this.uName = userName;
 
         name = new JLabel(uName);
 
@@ -90,20 +104,6 @@ public class ChatInterface extends JFrame implements ActionListener
         add(scrollPane, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
 
-        setUpMainFrame();
-
-        appendToEditorPane(msgPanel, uName + " has entered the chat.");
-
-        message = "/online";
-
-    }
-
-
-    public void setUpMainFrame()
-    {
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        Dimension d = (tk.getScreenSize());
-
         setSize(d.width / 2, d.height / 2);
         setLocation(d.width / 4, d.height / 4);
 
@@ -126,19 +126,23 @@ public class ChatInterface extends JFrame implements ActionListener
         } 
         catch (IOException | javax.swing.text.BadLocationException e) 
         {
-            e.printStackTrace();
         }
+    }
+
+    public boolean getRunning()
+    {
+        return this.running;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) 
     {
-        if(e.getActionCommand() == "DRAW")
+        if("DRAW".equals(e.getActionCommand()))
         {
             dInterface = new DrawInterface(this);
         }
         
-        if(e.getActionCommand() == "LOUT")
+        if("LOUT".equals(e.getActionCommand()))
         {
             LoginInterface.logFrame.setVisible(true);
             running = false;
@@ -154,10 +158,10 @@ public class ChatInterface extends JFrame implements ActionListener
         if(e.getActionCommand().equals("SEND"))
         {
             message = textbox.getText();
-            String msg =  textbox.getText() ;
+            String msg = textbox.getText() ;
             textbox.setText("");
     
-            if(!msg.isBlank() && !msg.toLowerCase().equals("/online"))
+            if(!msg.isBlank() && !msg.toLowerCase(Locale.ENGLISH).equals("/online"))
             {
                 appendToEditorPane(msgPanel ,("<FONT COLOR = 'BLUE'>" + uName + ">" + msg + "</FONT>"));
             }

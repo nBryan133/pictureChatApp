@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 public class ClientHandler implements Runnable
 {
-    private final Socket cSocket;
     private final BufferedReader reader;
     private final Set<PrintWriter> clients;
     private final PrintWriter sender;
@@ -17,11 +17,10 @@ public class ClientHandler implements Runnable
 
     ClientHandler(Socket cSocket, Set<PrintWriter> clients, PrintWriter sender) throws IOException
     {
-        this.cSocket = cSocket;
         this.clients = clients;
         this.sender = sender;
 
-        reader = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
+        reader = new BufferedReader(new InputStreamReader(cSocket.getInputStream(), StandardCharsets.UTF_8));
     }
 
     private void broadcast(String msg)
@@ -41,18 +40,18 @@ public class ClientHandler implements Runnable
         
         try
         {
-            String cMessage;
-
-            while((cMessage = reader.readLine()) != null)
-            {
-                broadcast(cMessage);
+            try (reader) {
+                String cMessage;
+                
+                while((cMessage = reader.readLine()) != null)
+                {
+                    broadcast(cMessage);
+                }
             }
 
-            reader.close();
-
-        } catch (IOException e) {
-            
-            e.printStackTrace();
+        } 
+        catch (IOException e)
+        {    
         }
     }
     

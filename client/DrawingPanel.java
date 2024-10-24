@@ -18,9 +18,9 @@ public class DrawingPanel extends JPanel
 {
     private List<DrawPoint> shapes = new ArrayList<>();
 
-    public int bSize;
+    private  int bSize;
 
-    public Color color;
+    private  Color color;
 
     public DrawingPanel()
     {
@@ -32,6 +32,7 @@ public class DrawingPanel extends JPanel
 
         addMouseListener(new MouseAdapter() 
         {
+            @Override
             public void mousePressed(MouseEvent e) 
             {
                 shapes.add(new DrawPoint(bSize, color));
@@ -43,6 +44,7 @@ public class DrawingPanel extends JPanel
         addMouseMotionListener(new MouseMotionAdapter() 
         {
 
+            @Override
             public void mouseDragged(MouseEvent e)
             {
                 shapes.get(shapes.size() - 1).points.add(e.getPoint());
@@ -79,9 +81,19 @@ public class DrawingPanel extends JPanel
         this.bSize = size;
     }
 
+    public int getBrushSize()
+    {
+        return this.bSize;
+    }
+
     public void setColor(Color color)
     {
         this.color = color;
+    }
+
+    public Color getColor()
+    {
+        return this.color;
     }
 
     public void clear()

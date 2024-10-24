@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -36,7 +37,7 @@ public class DrawInterface extends JFrame implements ActionListener
     String htmlContent;
 
     String[] colors = { "Black", "Red", "Blue", "Green", "Magenta", "Orange"};
-    JComboBox<String> colorSelect = new JComboBox<String>(colors);
+    JComboBox<String> colorSelect = new JComboBox<>(colors);
 
     JButton brushSize = new JButton("Brush Size");
     JButton clear = new JButton("Clear Screen");
@@ -56,6 +57,12 @@ public class DrawInterface extends JFrame implements ActionListener
     {
 
         cInt = cInterface;
+
+        setUpMainFrame();
+    }
+
+    private void setUpMainFrame()
+    {
 
         colorSelect.setPreferredSize(new Dimension(100, 20));
         colorSelect.setMaximumSize(new Dimension(100, 20));
@@ -92,12 +99,7 @@ public class DrawInterface extends JFrame implements ActionListener
         add(drawPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
         add(sendPanel, BorderLayout.SOUTH);
-
-        setUpMainFrame();
-    }
-
-    public void setUpMainFrame()
-    {
+        
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = (tk.getScreenSize());
 
@@ -113,49 +115,24 @@ public class DrawInterface extends JFrame implements ActionListener
 
     static Color getColor(String col)
     {
-        Color color = null;
+        Color color;
 
-        switch(col.toLowerCase())
+        switch(col.toLowerCase(Locale.ENGLISH))
         {
-            case "black":
-                color = Color.BLACK;
-                break;
-            case "blue":
-                color = Color.BLUE;
-                break;
-            case "cyan":
-                color = Color.CYAN;
-                break;
-            case "darkgray":
-                color = Color.DARK_GRAY;
-                break;
-            case "gray":
-                color = Color.GRAY;
-                break;
-            case "green":
-                color = Color.GREEN;
-                break;
-            case "yellow":
-                color = Color.YELLOW;
-                break;
-            case "lightgray":
-                color = Color.LIGHT_GRAY;
-                break;
-            case "magenta":
-                color = Color.MAGENTA;
-                break;
-            case "orange":
-                color = Color.ORANGE;
-                break;
-            case "pink":
-                color = Color.PINK;
-                break;
-            case "red":
-                color = Color.RED;
-                break;
-            case "white":
-                color = Color.WHITE;
-                break;
+            default -> color = Color.BLACK;
+            case "black" -> color = Color.BLACK;
+            case "blue" -> color = Color.BLUE;
+            case "cyan" -> color = Color.CYAN;
+            case "darkgray" -> color = Color.DARK_GRAY;
+            case "gray" -> color = Color.GRAY;
+            case "green" -> color = Color.GREEN;
+            case "yellow" -> color = Color.YELLOW;
+            case "lightgray" -> color = Color.LIGHT_GRAY;
+            case "magenta" -> color = Color.MAGENTA;
+            case "orange" -> color = Color.ORANGE;
+            case "pink" -> color = Color.PINK;
+            case "red" -> color = Color.RED;
+            case "white" -> color = Color.WHITE;
         }
 
         return color;
@@ -206,9 +183,9 @@ public class DrawInterface extends JFrame implements ActionListener
 
         if(e.getActionCommand().equals("BSIZ"))
         {
-            if(drawPanel.bSize < 5)
+            if(drawPanel.getBrushSize() < 5)
             {
-                drawPanel.setBrushSize(++drawPanel.bSize);
+                drawPanel.setBrushSize(1 + drawPanel.getBrushSize());
             }
             else
             {
@@ -221,7 +198,7 @@ public class DrawInterface extends JFrame implements ActionListener
 
             if(eraser.isSelected())
             {
-                buf = drawPanel.color;
+                buf = drawPanel.getColor();
                 drawPanel.setColor(drawPanel.getBackground());
             }
             else
@@ -232,7 +209,7 @@ public class DrawInterface extends JFrame implements ActionListener
 
         if(e.getActionCommand().equals("COL"))
         {
-            drawPanel.color = getColor(colorSelect.getSelectedItem().toString());
+            drawPanel.setColor(getColor(colorSelect.getSelectedItem().toString()));
 
             if(eraser.isSelected())
             {

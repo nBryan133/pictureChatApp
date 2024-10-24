@@ -40,6 +40,12 @@ public class LoginInterface extends JFrame implements ActionListener
 
     LoginInterface()
     {
+        setUpMainFrame();
+    }
+
+    private void setUpMainFrame()
+    {
+
         this.getRootPane().setDefaultButton(login);
 
         login.setActionCommand("LOG");
@@ -69,12 +75,7 @@ public class LoginInterface extends JFrame implements ActionListener
         bPanel.add(room2);
         
         add(outer, BorderLayout.CENTER);
-
-        setUpMainFrame();
-    }
-
-    public void setUpMainFrame()
-    {
+        
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = (tk.getScreenSize());
 
@@ -91,6 +92,7 @@ public class LoginInterface extends JFrame implements ActionListener
     }
 
     
+    @SuppressWarnings("unused")
     @Override
     public void actionPerformed(ActionEvent e) 
     {
